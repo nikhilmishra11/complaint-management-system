@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaint Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Admin</strong>
+    <nav>
+        <a th:href="@{/admin/complaints}">Complaints</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1 th:text="${complaint.id == null ? 'Add Complaint' : 'Update Complaint'}"></h1>
+        <form th:action="${complaint.id == null ? '/admin/complaints' : '/admin/complaints/' + complaint.id + '/edit'}"
+              th:object="${complaint}" method="post">
+            <div class="grid two">
+                <div>
+                    <label for="title">Title</label>
+                    <input id="title" th:field="*{title}" minlength="5" maxlength="120" required>
+                    <div class="field-error" th:errors="*{title}"></div>
+                </div>
+                <div>
+                    <label for="category">Category</label>
+                    <input id="category" th:field="*{category}" required>
+                    <div class="field-error" th:errors="*{category}"></div>
+                </div>
+            </div>
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}" minlength="10" maxlength="1000" required></textarea>
+            <div class="field-error" th:errors="*{description}"></div>
+
+            <div class="grid two">
+                <div>
+                    <label for="complaintDate">Complaint Date</label>
+                    <input id="complaintDate" th:field="*{complaintDate}" type="date" required>
+                    <div class="field-error" th:errors="*{complaintDate}"></div>
+                </div>
+                <div>
+                    <label for="status">Status</label>
+                    <select id="status" th:field="*{status}" required>
+                        <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="comments">Comments</label>
+            <textarea id="comments" th:field="*{comments}" maxlength="1000"></textarea>
+
+            <div class="actions">
+                <button type="submit">Save Complaint</button>
+                <a th:href="@{/admin/complaints}">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

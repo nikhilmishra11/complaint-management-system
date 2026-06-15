@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaint Reports</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Reports</strong>
+    <nav>
+        <a th:href="@{/admin/complaints}">Complaints</a>
+        <a th:href="@{/admin/assignments}">Assignation</a>
+        <a th:href="@{/reports}">Reports</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>Complaint Reports</h1>
+        <div class="grid two">
+            <form th:action="@{/reports/status}" method="get">
+                <label for="status">Status Report</label>
+                <select id="status" name="status" required>
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"
+                            th:selected="${selectedStatus == status}"></option>
+                </select>
+                <button type="submit">Generate by Status</button>
+            </form>
+            <form th:action="@{/reports/date-range}" method="get">
+                <label for="startDate">Date Range</label>
+                <div class="grid two">
+                    <input id="startDate" name="startDate" type="date" th:value="${startDate}" required>
+                    <input name="endDate" type="date" th:value="${endDate}" required>
+                </div>
+                <button type="submit">Generate by Date Range</button>
+            </form>
+            <form th:action="@{/reports/status}" method="get">
+                <input type="hidden" name="status" value="PENDING">
+                <label>Pending Complaints</label>
+                <button type="submit">Pending Report</button>
+            </form>
+            <form th:action="@{/reports/status}" method="get">
+                <input type="hidden" name="status" value="COMPLETED">
+                <label>Solved Complaints</label>
+                <button type="submit">Solved Report</button>
+            </form>
+            <form th:action="@{/reports/user}" method="get">
+                <label for="userId">User Wise Report</label>
+                <select id="userId" name="userId" required>
+                    <option value="">Select customer</option>
+                    <option th:each="customer : ${customers}"
+                            th:value="${customer.id}"
+                            th:text="${customer.name + ' (' + customer.email + ')'}"
+                            th:selected="${selectedUser != null && selectedUser.id == customer.id}"></option>
+                </select>
+                <button type="submit">Generate by User</button>
+            </form>
+        </div>
+    </section>
+    <section class="panel" style="margin-top: 18px;">
+        <h2>Report Results</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Customer</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Employee</th>
+                <th>Feedback</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.id}"></td>
+                <td th:text="${complaint.title}"></td>
+                <td th:text="${complaint.customer != null ? complaint.customer.name : 'N/A'}"></td>
+                <td th:text="${complaint.category}"></td>
+                <td th:text="${complaint.complaintDate}"></td>
+                <td><span class="badge" th:text="${complaint.status}"></span></td>
+                <td th:text="${complaint.assignedEmployee != null ? complaint.assignedEmployee.name : 'Unassigned'}"></td>
+                <td th:text="${complaint.feedback}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

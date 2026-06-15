@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CMS Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="container auth">
+    <section class="panel">
+        <h1>Complaint Management System</h1>
+        <p>Login with your role account to manage complaints.</p>
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+        <div class="success" th:if="${success}" th:text="${success}"></div>
+        <form th:action="@{/login}" method="post">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" minlength="6" required>
+
+            <div class="actions">
+                <button type="submit">Login</button>
+                <a th:href="@{/register}">Register</a>
+                <a th:href="@{/forgot-password}">Forgot password?</a>
+            </div>
+        </form>
+        <p><strong>Demo:</strong> admin@cms.com/admin123, customer@cms.com/customer123, employee@cms.com/employee123</p>
+    </section>
+</main>
+</body>
+</html>

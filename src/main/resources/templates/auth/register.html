@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Customer</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="container auth">
+    <section class="panel">
+        <h1>Customer Registration</h1>
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <label for="name">Name</label>
+            <input id="name" th:field="*{name}" required minlength="2" maxlength="80">
+            <div class="field-error" th:errors="*{name}"></div>
+
+            <label for="email">Email</label>
+            <input id="email" th:field="*{email}" type="email" required>
+            <div class="field-error" th:errors="*{email}"></div>
+
+            <label for="phone">Phone</label>
+            <input id="phone" th:field="*{phone}" required minlength="7" maxlength="20">
+            <div class="field-error" th:errors="*{phone}"></div>
+
+            <label for="password">Password</label>
+            <input id="password" th:field="*{password}" type="password" required minlength="6" maxlength="60">
+            <div class="field-error" th:errors="*{password}"></div>
+
+            <div class="actions">
+                <button type="submit">Register</button>
+                <a th:href="@{/login}">Back to login</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

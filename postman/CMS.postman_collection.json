@@ -1,0 +1,357 @@
+{
+  "info": {
+    "name": "Complaint Management System API",
+    "description": "Importable Postman collection for testing the CMS JSON endpoints. Start the app with mvn spring-boot:run, then run requests from top to bottom.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@cms.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": "admin123"
+    },
+    {
+      "key": "customerId",
+      "value": "2"
+    },
+    {
+      "key": "employeeId",
+      "value": "3"
+    },
+    {
+      "key": "complaintId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('login succeeds', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('loggedInUserId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Customer\",\n  \"email\": \"postman.customer{{$timestamp}}@cms.com\",\n  \"password\": \"postman123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"CUSTOMER\",\n  \"available\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('customer registered', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('customerId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@cms.com\",\n  \"password\": \"customer123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complaints",
+      "item": [
+        {
+          "name": "Create Complaint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman test complaint\",\n  \"description\": \"Complaint created from Postman collection for endpoint testing.\",\n  \"category\": \"General\",\n  \"complaintDate\": \"2026-06-15\",\n  \"status\": \"PENDING\",\n  \"comments\": \"Created by Postman\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints?customerId={{customerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "complaints"
+              ],
+              "query": [
+                {
+                  "key": "customerId",
+                  "value": "{{customerId}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('complaint created', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('complaintId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Complaints",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/complaints"
+          }
+        },
+        {
+          "name": "Get Complaint By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}"
+          }
+        },
+        {
+          "name": "Update Complaint",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Postman complaint\",\n  \"description\": \"Updated description from Postman collection.\",\n  \"category\": \"Updated\",\n  \"complaintDate\": \"2026-06-15\",\n  \"status\": \"PENDING\",\n  \"comments\": \"Updated comment\"\n}"
+            },
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}"
+          }
+        },
+        {
+          "name": "Update Complaint Status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}/status?status=IN_PROGRESS"
+          }
+        },
+        {
+          "name": "Update Customer Comments",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comments\": \"Customer added a follow-up comment.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}/comments"
+          }
+        },
+        {
+          "name": "Give Feedback",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feedback\": \"Issue handled well.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}/feedback"
+          }
+        },
+        {
+          "name": "Delete Complaint",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assignation and Employee",
+      "item": [
+        {
+          "name": "Available Employees",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/assignments/available-employees"
+          }
+        },
+        {
+          "name": "Assign Complaint",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/assignments?complaintId={{complaintId}}&employeeId={{employeeId}}"
+          }
+        },
+        {
+          "name": "Employee Complaints",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/employees/{{employeeId}}/complaints"
+          }
+        },
+        {
+          "name": "Employee Update Status And Remarks",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeRemarks\": \"Work completed and verified.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/employees/complaints/{{complaintId}}?status=COMPLETED"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User and Reports",
+      "item": [
+        {
+          "name": "User Complaints",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{customerId}}/complaints"
+          }
+        },
+        {
+          "name": "Report By Pending Status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/status?status=PENDING"
+          }
+        },
+        {
+          "name": "Report By Solved Status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/status?status=COMPLETED"
+          }
+        },
+        {
+          "name": "Report By Date Range",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/date-range?startDate=2026-01-01&endDate=2026-12-31"
+          }
+        },
+        {
+          "name": "Report By User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/user?userId={{customerId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

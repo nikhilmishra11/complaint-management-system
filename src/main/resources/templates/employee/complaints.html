@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Assigned Complaints</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Employee</strong>
+    <nav>
+        <a th:href="@{/employee/complaints}">Assigned Complaints</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>Assigned Complaints</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Complaint</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Update Status and Remarks</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.id}"></td>
+                <td>
+                    <strong th:text="${complaint.title}"></strong><br>
+                    <span th:text="${complaint.description}"></span><br>
+                    <small th:text="${complaint.category + ' | ' + complaint.complaintDate}"></small>
+                </td>
+                <td th:text="${complaint.customer != null ? complaint.customer.name : 'N/A'}"></td>
+                <td><span class="badge" th:text="${complaint.status}"></span></td>
+                <td>
+                    <form th:action="@{/employee/complaints/{id}/update(id=${complaint.id})}" method="post">
+                        <label th:for="${'status-' + complaint.id}">Status</label>
+                        <select th:id="${'status-' + complaint.id}" name="status" required>
+                            <option th:each="status : ${statuses}"
+                                    th:value="${status}"
+                                    th:text="${status}"
+                                    th:selected="${status == complaint.status}"></option>
+                        </select>
+                        <label th:for="${'remarks-' + complaint.id}">Remarks</label>
+                        <textarea th:id="${'remarks-' + complaint.id}" name="employeeRemarks" maxlength="1000"
+                                  th:text="${complaint.employeeRemarks}"></textarea>
+                        <button type="submit">Save Update</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

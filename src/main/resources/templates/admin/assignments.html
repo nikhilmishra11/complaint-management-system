@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaint Assignation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Admin</strong>
+    <nav>
+        <a th:href="@{/admin/complaints}">Complaints</a>
+        <a th:href="@{/admin/assignments}">Assignation</a>
+        <a th:href="@{/reports}">Reports</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>Complaint Assignation</h1>
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+        <form th:action="@{/admin/assignments}" method="post" class="grid two">
+            <div>
+                <label for="complaintId">Complaint</label>
+                <select id="complaintId" name="complaintId" required>
+                    <option value="">Select complaint</option>
+                    <option th:each="complaint : ${complaints}"
+                            th:value="${complaint.id}"
+                            th:text="${'#' + complaint.id + ' - ' + complaint.title}"></option>
+                </select>
+            </div>
+            <div>
+                <label for="employeeId">Available Employee</label>
+                <select id="employeeId" name="employeeId" required>
+                    <option value="">Select employee</option>
+                    <option th:each="employee : ${employees}"
+                            th:value="${employee.id}"
+                            th:text="${employee.name + ' (' + employee.email + ')'}"></option>
+                </select>
+            </div>
+            <div class="actions">
+                <button type="submit">Assign Complaint</button>
+            </div>
+        </form>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Complaint</th>
+                <th>Status</th>
+                <th>Assigned Employee</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.id}"></td>
+                <td th:text="${complaint.title}"></td>
+                <td><span class="badge" th:text="${complaint.status}"></span></td>
+                <td th:text="${complaint.assignedEmployee != null ? complaint.assignedEmployee.name : 'Unassigned'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

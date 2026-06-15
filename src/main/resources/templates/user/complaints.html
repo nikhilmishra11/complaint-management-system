@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Complaints</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Customer</strong>
+    <nav>
+        <a th:href="@{/user/complaints}">My Complaints</a>
+        <a th:href="@{/user/complaints/new}">Register Complaint</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>My Complaints</h1>
+        <div class="actions">
+            <a class="button" th:href="@{/user/complaints/new}">Register Complaint</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Complaint</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Assigned</th>
+                <th>Comments and Feedback</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.id}"></td>
+                <td>
+                    <strong th:text="${complaint.title}"></strong><br>
+                    <span th:text="${complaint.description}"></span><br>
+                    <small th:text="${complaint.category}"></small>
+                </td>
+                <td th:text="${complaint.complaintDate}"></td>
+                <td><span class="badge" th:text="${complaint.status}"></span></td>
+                <td th:text="${complaint.assignedEmployee != null ? complaint.assignedEmployee.name : 'Pending'}"></td>
+                <td>
+                    <form th:action="@{/user/complaints/{id}/comments(id=${complaint.id})}" method="post">
+                        <label th:for="${'comments-' + complaint.id}">Comments</label>
+                        <textarea th:id="${'comments-' + complaint.id}" name="comments" maxlength="1000"
+                                  th:text="${complaint.comments}"></textarea>
+                        <button type="submit">Update Comments</button>
+                    </form>
+                    <form th:action="@{/user/complaints/{id}/feedback(id=${complaint.id})}" method="post">
+                        <label th:for="${'feedback-' + complaint.id}">Feedback</label>
+                        <textarea th:id="${'feedback-' + complaint.id}" name="feedback" maxlength="1000"
+                                  th:text="${complaint.feedback}"></textarea>
+                        <button class="secondary" type="submit">Give Feedback</button>
+                    </form>
+                    <p th:if="${complaint.employeeRemarks}">
+                        <strong>Employee remarks:</strong>
+                        <span th:text="${complaint.employeeRemarks}"></span>
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

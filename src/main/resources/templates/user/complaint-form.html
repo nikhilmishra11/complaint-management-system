@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Complaint</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Customer</strong>
+    <nav>
+        <a th:href="@{/user/complaints}">My Complaints</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>Register Complaint</h1>
+        <form th:action="@{/user/complaints}" th:object="${complaint}" method="post">
+            <div class="grid two">
+                <div>
+                    <label for="title">Title</label>
+                    <input id="title" th:field="*{title}" minlength="5" maxlength="120" required>
+                    <div class="field-error" th:errors="*{title}"></div>
+                </div>
+                <div>
+                    <label for="category">Category</label>
+                    <input id="category" th:field="*{category}" required>
+                    <div class="field-error" th:errors="*{category}"></div>
+                </div>
+            </div>
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}" minlength="10" maxlength="1000" required></textarea>
+            <div class="field-error" th:errors="*{description}"></div>
+
+            <label for="complaintDate">Complaint Date</label>
+            <input id="complaintDate" th:field="*{complaintDate}" type="date" required>
+            <div class="field-error" th:errors="*{complaintDate}"></div>
+
+            <label for="comments">Comments</label>
+            <textarea id="comments" th:field="*{comments}" maxlength="1000"></textarea>
+
+            <div class="actions">
+                <button type="submit">Submit Complaint</button>
+                <a th:href="@{/user/complaints}">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

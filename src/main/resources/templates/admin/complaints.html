@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Complaints</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <strong>CMS Admin</strong>
+    <nav>
+        <a th:href="@{/admin/complaints}">Complaints</a>
+        <a th:href="@{/admin/assignments}">Assignation</a>
+        <a th:href="@{/reports}">Reports</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</header>
+<main class="container">
+    <section class="panel">
+        <h1>Complaint Details</h1>
+        <div class="actions">
+            <a class="button" th:href="@{/admin/complaints/new}">Add New Complaint</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Customer</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Assigned</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}">
+                <td th:text="${complaint.id}"></td>
+                <td>
+                    <strong th:text="${complaint.title}"></strong><br>
+                    <span th:text="${complaint.description}"></span>
+                </td>
+                <td th:text="${complaint.customer != null ? complaint.customer.name : 'N/A'}"></td>
+                <td th:text="${complaint.category}"></td>
+                <td th:text="${complaint.complaintDate}"></td>
+                <td><span class="badge" th:text="${complaint.status}"></span></td>
+                <td th:text="${complaint.assignedEmployee != null ? complaint.assignedEmployee.name : 'Unassigned'}"></td>
+                <td>
+                    <div class="actions">
+                        <a class="button secondary" th:href="@{/admin/complaints/{id}/edit(id=${complaint.id})}">Edit</a>
+                        <form th:action="@{/admin/complaints/{id}/delete(id=${complaint.id})}" method="post">
+                            <button class="danger" type="submit">Delete</button>
+                        </form>
+                    </div>
+                    <form th:action="@{/admin/complaints/{id}/status(id=${complaint.id})}" method="post">
+                        <select name="status" required>
+                            <option th:each="status : ${T(com.example.cms.model.ComplaintStatus).values()}"
+                                    th:value="${status}"
+                                    th:text="${status}"
+                                    th:selected="${status == complaint.status}"></option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
