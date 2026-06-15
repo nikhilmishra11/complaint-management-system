@@ -6,6 +6,38 @@ Complaint Management System is a Spring Boot 4 web application built with Java 1
 
 The application follows a layered Spring MVC architecture.
 
+```mermaid
+flowchart TD
+    User["Browser User"] --> Web["Thymeleaf Web Pages"]
+    Postman["Postman / API Client"] --> Api["REST API /api/**"]
+
+    Web --> WebControllers["Spring MVC Web Controllers"]
+    Api --> ApiControllers["REST API Controllers"]
+
+    WebControllers --> Services["Service Layer"]
+    ApiControllers --> Services
+
+    Services --> UserService["UserService"]
+    Services --> ComplaintService["ComplaintService"]
+    Services --> AssignationService["AssignationService"]
+
+    UserService --> UserRepository["UserRepository"]
+    ComplaintService --> ComplaintRepository["ComplaintRepository"]
+    AssignationService --> UserRepository
+    AssignationService --> ComplaintRepository
+
+    UserRepository --> H2["H2 Database"]
+    ComplaintRepository --> H2
+
+    DataInitializer["DataInitializer Dummy Data"] --> H2
+    Profiles["Spring Profiles: local / test / prod"] --> Config["Application Configuration"]
+    Config --> H2
+    Config --> DataInitializer
+
+    Tests["Mockito + MVC Tests + Cucumber"] --> ApiControllers
+    Tests --> Services
+```
+
 ```text
 Browser / Postman
       |
